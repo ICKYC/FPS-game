@@ -3,29 +3,29 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Input KeyCodes")]
-    [SerializeField] private KeyCode keyCodeRun = KeyCode.LeftShift; //¿ŞÂÊ ½¬ÇÁÆ®Å°´Â ´Ş¸®±â Å°
-    [SerializeField] private KeyCode keyCodeJump = KeyCode.Space;    //½ºÆäÀÌ½º´Â Á¡ÇÁ Å°
-    [SerializeField] private KeyCode keyCodeReload = KeyCode.R;     //Åº ÀçÀåÀü Å°
+    [SerializeField] private KeyCode keyCodeRun = KeyCode.LeftShift; //ì™¼ìª½ ì‰¬í”„íŠ¸í‚¤ëŠ” ë‹¬ë¦¬ê¸° í‚¤
+    [SerializeField] private KeyCode keyCodeJump = KeyCode.Space;    //ìŠ¤í˜ì´ìŠ¤ëŠ” ì í”„ í‚¤
+    [SerializeField] private KeyCode keyCodeReload = KeyCode.R;     //íƒ„ ì¬ì¥ì „ í‚¤
 
     [Header("Audio Clips")]
     [SerializeField] private AudioClip audioClipWalk;
     [SerializeField] private AudioClip audioClipRun;
 
-    private RotateToMouse rotateToMouse;            //¸¶¿ì½º ÀÌµ¿À¸·Î Ä«¸Ş¶ó È¸Àü
-    private MovementCharacterController movement;   //Å°º¸µå ÀÔ·ÂÀ¸·Î ÇÃ·¹ÀÌ¾î ÀÌµ¿, Á¡ÇÁ
-    private Status status;                          //ÀÌµ¿¼Óµµ µîÀÇ ÇÃ·¹ÀÌ¾î Á¤º¸
-    private PlayerAnimatorController animator;      //¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı Á¦¾î
-    private AudioSource audioSource;                //»ç¿îµå Àç»ı Á¦¾î
-    private WeaponAssaultRifle weapon;              //¹«±â¸¦ ÀÌ¿ëÇÑ °ø°İ Á¦¾î
+    private RotateToMouse rotateToMouse;            //ë§ˆìš°ìŠ¤ ì´ë™ìœ¼ë¡œ ì¹´ë©”ë¼ íšŒì „
+    private MovementCharacterController movement;   //í‚¤ë³´ë“œ ì…ë ¥ìœ¼ë¡œ í”Œë ˆì´ì–´ ì´ë™, ì í”„
+    private Status status;                          //ì´ë™ì†ë„ ë“±ì˜ í”Œë ˆì´ì–´ ì •ë³´
+    private PlayerAnimatorController animator;      //ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ ì œì–´
+    private AudioSource audioSource;                //ì‚¬ìš´ë“œ ì¬ìƒ ì œì–´
+    private WeaponAssaultRifle weapon;              //ë¬´ê¸°ë¥¼ ì´ìš©í•œ ê³µê²© ì œì–´
     public EnemyMemoryPool enemyMemoryPool;
 
     private void Awake()
     {
-        //¸¶¿ì½º Ä¿¼­ ¾Èº¸ÀÌ°Ô ¼³Á¤, ÇöÀç À§Ä¡¿¡ °íÁ¤
+        //ë§ˆìš°ìŠ¤ ì»¤ì„œ ì•ˆë³´ì´ê²Œ ì„¤ì •, í˜„ì¬ ìœ„ì¹˜ì— ê³ ì •
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        //ÄÄÆ÷³ÍÆ® Á¤º¸¸¦ ºÒ·¯¿Í º¯¼ö¿¡ ÀúÀå
+        //ì»´í¬ë„ŒíŠ¸ ì •ë³´ë¥¼ ë¶ˆëŸ¬ì™€ ë³€ìˆ˜ì— ì €ì¥
         rotateToMouse = GetComponent<RotateToMouse>();
         movement = GetComponent<MovementCharacterController>();
         status = GetComponent<Status>();
@@ -52,23 +52,23 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateMove()
     {
-        float x = Input.GetAxisRaw("Horizontal"); //Å°º¸µå ÁÂ¿ìÀÔ·Â
-        float z = Input.GetAxisRaw("Vertical");   //Å°º¸µå »óÇÏÀÔ·Â
+        float x = Input.GetAxisRaw("Horizontal"); //í‚¤ë³´ë“œ ì¢Œìš°ì…ë ¥
+        float z = Input.GetAxisRaw("Vertical");   //í‚¤ë³´ë“œ ìƒí•˜ì…ë ¥
 
-        //ÀÌµ¿Áß ÀÏ ¶§(°È±â or ¶Ù±â)
+        //ì´ë™ì¤‘ ì¼ ë•Œ(ê±·ê¸° or ë›°ê¸°)
         if (x != 0 || z != 0)
         {
             bool isRun = false;
 
-            //¿·ÀÌ³ª µÚ·Î ÀÌµ¿ÇÒ ¶§´Â ´Ş¸± ¼ö ¾øÀ½
+            //ì˜†ì´ë‚˜ ë’¤ë¡œ ì´ë™í•  ë•ŒëŠ” ë‹¬ë¦´ ìˆ˜ ì—†ìŒ
             if (z > 0) isRun = Input.GetKey(keyCodeRun);
 
             movement.MoveSpeed = isRun == true ? status.RunSpeed : status.WalkSpeed;
             animator.MoveSpeed = isRun == true ? 1 : 0.5f;
             audioSource.clip = isRun == true ? audioClipRun : audioClipWalk;
 
-            //¹æÇâÅ° ÀÔ·Â ¿©ºÎ´Â ¸Å ÇÁ·¹ÀÓ È®ÀÎ
-            //¶§¹®¿¡ Àç»ıÁß¿¡´Â ´Ù½Ã Àç»ıÇÏÁö ¾Êµµ·Ï isPlayingÀ¸·Î Ã¼Å©ÇÏ¿© Àç»ı
+            //ë°©í–¥í‚¤ ì…ë ¥ ì—¬ë¶€ëŠ” ë§¤ í”„ë ˆì„ í™•ì¸
+            //ë•Œë¬¸ì— ì¬ìƒì¤‘ì—ëŠ” ë‹¤ì‹œ ì¬ìƒí•˜ì§€ ì•Šë„ë¡ isPlayingìœ¼ë¡œ ì²´í¬í•˜ì—¬ ì¬ìƒ
             if (audioSource.isPlaying == false)
             {
                 audioSource.loop = true;
@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        movement.MoveTo(new Vector3(x, 0, z)); //¹Ş¾Æ¿Â ÀÔ·ÂµéÀ» moveToÀÇ ¸Å°³º¯¼ö·Î »ç¿ë
+        movement.MoveTo(new Vector3(x, 0, z)); //ë°›ì•„ì˜¨ ì…ë ¥ë“¤ì„ moveToì˜ ë§¤ê°œë³€ìˆ˜ë¡œ ì‚¬ìš©
     }
 
     private void UpdateJump()
@@ -130,9 +130,9 @@ public class PlayerController : MonoBehaviour
         if (isDie)
         {
             Debug.Log("GameOver");
-            Time.timeScale = 0; // °ÔÀÓ ¸ØÃã
-            Cursor.visible = true; // ¸¶¿ì½º Ä¿¼­ º¸ÀÌ°Ô ÇÔ
-            Cursor.lockState = CursorLockMode.None; // È­¸é Áß¾Ó¿¡¼­ ¸¶¿ì½º Ç®¾îÁÜ
+            Time.timeScale = 0; // ê²Œì„ ë©ˆì¶¤
+            Cursor.visible = true; // ë§ˆìš°ìŠ¤ ì»¤ì„œ ë³´ì´ê²Œ í•¨
+            Cursor.lockState = CursorLockMode.None; // í™”ë©´ ì¤‘ì•™ì—ì„œ ë§ˆìš°ìŠ¤ í’€ì–´ì¤Œ
             enemyMemoryPool.panelGameOver.SetActive(true);
         }
     }
