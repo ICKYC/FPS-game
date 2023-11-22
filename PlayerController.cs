@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private KeyCode keyCodeRun = KeyCode.LeftShift; //왼쪽 쉬프트키는 달리기 키
     [SerializeField] private KeyCode keyCodeJump = KeyCode.Space;    //스페이스는 점프 키
     [SerializeField] private KeyCode keyCodeReload = KeyCode.R;     //탄 재장전 키
+    public int temp;
 
     [Header("Audio Clips")]
     [SerializeField] private AudioClip audioClipWalk;
